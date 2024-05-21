@@ -7,7 +7,9 @@
 import pika, json, uuid
 
 class StringValidatorClient(object):
-    """TK"""
+    """Class used to send data to/receive data from the StringValidator microservice, via the .call()
+    function. As shown in the example iteration below, .call takes one parameter, a list containing: a user's string,
+    a lower bound of acceptability, and an upper bound of acceptability."""
 
     def __init__(self):
         self.connection = pika.BlockingConnection(
@@ -31,7 +33,6 @@ class StringValidatorClient(object):
             self.response = body
 
     def call(self, string_list):
-        """TK"""
         self.response = None
         self.corr_id = str(uuid.uuid4())
         self.channel.basic_publish(
@@ -46,36 +47,19 @@ class StringValidatorClient(object):
             self.connection.process_data_events(time_limit=None)
         return self.response
 
+# EXAMPLE IMPLEMENTATION BELOW
 
-stringvalidator_rpc = StringValidatorClient()
-test_string = "Do homework today"
-test_lower = 0
-test_upper = 40
-test_body = [test_string, test_lower, test_upper]
-send_body = json.dumps(test_body)
-response = stringvalidator_rpc.call(send_body)
-print(response)
-jresp = json.loads(response)
-print(jresp)
-if jresp == "Just Right":
-    print("yay")
-else:
-    print("nay")
-
-
-
-# test_string = "Do homework today"
+# stringvalidator_rpc = StringValidatorClient()
+# test_string = "Do your homework"
 # test_lower = 0
 # test_upper = 40
 # test_body = [test_string, test_lower, test_upper]
 # send_body = json.dumps(test_body)
-#
-# connection = pika.BlockingConnection(
-#     pika.ConnectionParameters(host='localhost'))
-# channel = connection.channel()
-#
-# channel.queue_declare(queue='StringValidation')
-#
-# channel.basic_publish(exchange='', routing_key='StringValidation', body=str(send_body))
-# print("Sent a message from Validator Test")
-# connection.close()
+# response = stringvalidator_rpc.call(send_body)
+# print(response)
+# jresp = json.loads(response)
+# print(jresp)
+# if jresp == "Just Right":
+#     print("yay")
+# else:
+#     print("nay")
